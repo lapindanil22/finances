@@ -1,0 +1,181 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-tables
+      author: danil
+      changes:
+        - createTable:
+            tableName: client
+            columns:
+              - column:
+                  name: client_id
+                  type: INT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: last_name
+                  type: varchar(50)
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: first_name
+                  type: varchar(50)
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: middle_name
+                  type: varchar(50)
+                  constraints:
+                    unique: false
+                    nullable: true
+              - column:
+                  name: secret_word
+                  type: varchar(50)
+        - createTable:
+            tableName: account
+            columns:
+              - column:
+                  name: account_id
+                  type: INT
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: client_id
+                  type: INT
+                  constraints:
+                    primaryKey: false
+                    nullable: false
+              - column:
+                  name: account_number
+                  type: INT
+                  constraints:
+                    unique: true
+                    nullable: false
+              - column:
+                  name: balance
+                  type: integer
+              - column:
+                  name: account_type
+                  type: varchar(50)
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: opening_date
+                  type: date
+              - column:
+                  name: expiration_date
+                  type: date
+        - createTable:
+            tableName: transaction
+            columns:
+              - column:
+                  name: transaction_id
+                  type: serial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: amount
+                  type: INT
+              - column:
+                  name: creation_date
+                  type: date
+              - column:
+                  name: type
+                  type: varchar(50)
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: execution_result
+                  type: varchar(50)
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: account_id
+                  type: INT
+                  constraints:
+                    primaryKey: false
+                    nullable: false
+              - column:
+                  name: cash_order_id
+                  type: INT
+                  constraints:
+                    primaryKey: false
+                    nullable: true
+              - column:
+                  name: sender_account_id
+                  type: INT
+                  constraints:
+                    primaryKey: false
+                    nullable: true
+        - createTable:
+            tableName: cash_order
+            columns:
+              - column:
+                  name: cash_order_id
+                  type: serial
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: order_type
+                  type: varchar(50)
+              - column:
+                  name: amount
+                  type: INT
+              - column:
+                  name: creation_date
+                  type: date
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: execution_result
+                  type: varchar(50)
+                  constraints:
+                    unique: false
+                    nullable: false
+              - column:
+                  name: account_id
+                  type: INT
+                  constraints:
+                    primaryKey: false
+                    nullable: false
+
+        - addForeignKeyConstraint:
+            baseColumnNames: client_id
+            baseTableName: account
+            constraintName: fk_client_id
+            referencedColumnNames: client_id
+            referencedTableName: client
+
+        - addForeignKeyConstraint:
+            baseColumnNames: account_id
+            baseTableName: transaction
+            constraintName: fk_account_id
+            referencedColumnNames: account_id
+            referencedTableName: account
+
+        - addForeignKeyConstraint:
+            baseColumnNames: cash_order_id
+            baseTableName: transaction
+            constraintName: fk_cash_order_id
+            referencedColumnNames: cash_order_id
+            referencedTableName: cash_order
+
+        - addForeignKeyConstraint:
+            baseColumnNames: account_id
+            baseTableName: cash_order
+            constraintName: fk_account_id
+            referencedColumnNames: account_id
+            referencedTableName: account
