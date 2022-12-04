@@ -68,8 +68,7 @@
 ```json
 [{"accountId":{"clientId":{"id":1,"lastName":"Nunquam","firstName":"Ridetis","middleName":"Patienter","secretWord":"$2a$12$FgH/NHryz3pkfyqtXdBS5.LJC/5kzrNmuKxtckFVxx8SrC/Xlx9MC"},"id":1,"accountNumber":123000,"balance":500,"accountType":"DEBIT","openingDate":"2020-06-19T17:00:00.000+00:00","expirationDate":"2030-06-19T17:00:00.000+00:00"},"id":1,"orderType":"DEPOSIT","amount":500,"executionResult":"SUCCESS","creationDate":"2022-11-30T17:00:00.000+00:00"},{"accountId":{"clientId":{"id":1,"lastName":"Nunquam","firstName":"Ridetis","middleName":"Patienter","secretWord":"$2a$12$FgH/NHryz3pkfyqtXdBS5.LJC/5kzrNmuKxtckFVxx8SrC/Xlx9MC"},"id":1,"accountNumber":123000,"balance":500,"accountType":"DEBIT","openingDate":"2020-06-19T17:00:00.000+00:00","expirationDate":"2030-06-19T17:00:00.000+00:00"},"id":2,"orderType":"TRANSFER","amount":300,"executionResult":"SUCCESS","creationDate":"2022-11-30T17:00:00.000+00:00"},{"accountId":{"clientId":{"id":1,"lastName":"Nunquam","firstName":"Ridetis","middleName":"Patienter","secretWord":"$2a$12$FgH/NHryz3pkfyqtXdBS5.LJC/5kzrNmuKxtckFVxx8SrC/Xlx9MC"},"id":1,"accountNumber":123000,"balance":500,"accountType":"DEBIT","openingDate":"2020-06-19T17:00:00.000+00:00","expirationDate":"2030-06-19T17:00:00.000+00:00"},"id":3,"orderType":"WITHDRAW","amount":200,"executionResult":"SUCCESS","creationDate":"2022-12-01T17:00:00.000+00:00"}]
 ```
-
-## 6. Создать транзикцию на перевод
+## 6. Создать транзакцию на перевод
 
 ### Пример запроса
 
