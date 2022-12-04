@@ -11,4 +11,5 @@ public class TransferRequest {
     private int receiverAccountId;
     private int senderAccountId;
     private int amount;
+    private String secretWord;
 }

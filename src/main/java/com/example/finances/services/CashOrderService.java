@@ -1,7 +1,9 @@
 package com.example.finances.services;
 
 import com.example.finances.DTO.requests.CashOrderRequest;
+import com.example.finances.exceptions.ExpiredAccountException;
 import com.example.finances.exceptions.NotEnoughMoneyException;
+import com.example.finances.exceptions.WrongSecretWordException;
 import com.example.finances.models.Account;
 import com.example.finances.models.CashOrder;
 import com.example.finances.models.Transaction;
@@ -9,6 +11,7 @@ import com.example.finances.repositories.AccountRepository;
 import com.example.finances.repositories.CashOrderRepository;
 import com.example.finances.repositories.TransactionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -19,12 +22,14 @@ public class CashOrderService {
     private final CashOrderRepository cashOrderRepository;
     private final AccountRepository accountRepository;
     private final TransactionRepository transactionRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
-    public CashOrderService(CashOrderRepository cashOrderRepository, AccountRepository accountRepository, TransactionRepository transactionRepository) {
+    public CashOrderService(CashOrderRepository cashOrderRepository, AccountRepository accountRepository, TransactionRepository transactionRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.cashOrderRepository = cashOrderRepository;
         this.accountRepository = accountRepository;
         this.transactionRepository = transactionRepository;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
 
     public List<CashOrder> getAll() {
@@ -38,29 +43,47 @@ public class CashOrderService {
     public void createCashOrder(CashOrderRequest cashOrderRequest) {
         Account account = accountRepository.findById(cashOrderRequest.getAccountId()).get();
 
-        if (cashOrderRequest.getType().equals("DEPOSIT")) {
-            account.setBalance(account.getBalance() + cashOrderRequest.getAmount());
-        } else if (cashOrderRequest.getType().equals("WITHDRAW")) {
-            if (account.getBalance() < cashOrderRequest.getAmount()) {
-                throw new NotEnoughMoneyException();
-            }
-            account.setBalance(account.getBalance() - cashOrderRequest.getAmount());
-        }
+        Date now = new Date();
+
         CashOrder cashOrder = CashOrder.builder()
                 .orderType(cashOrderRequest.getType())
                 .amount(cashOrderRequest.getAmount())
                 .accountId(account)
-                .executionResult("SUCCESS")
-                .creationDate(new Date())
+                .creationDate(now)
                 .build();
 
         Transaction transaction = Transaction.builder()
-                .creationDate(new Date())
+                .creationDate(now)
                 .amount(cashOrderRequest.getAmount())
                 .type(cashOrderRequest.getType())
                 .accountId(account)
-                .executionResult("SUCCESS")
                 .build();
+
+        if (!bCryptPasswordEncoder.matches(
+                cashOrderRequest.getSecretWord(),
+                account.getClientId().getSecretWord()
+        )) {
+            cashOrder.setExecutionResult("WRONG_SECRET_WORD");
+            transaction.setExecutionResult("WRONG_SECRET_WORD");
+            cashOrderRepository.save(cashOrder);
+            transactionRepository.save(transaction);
+            throw new WrongSecretWordException("Неверное кодовое слово");
+        }
+
+        if (now.after(account.getExpirationDate()))
+            throw new ExpiredAccountException("Срок действия аккаунта истек");
+
+        if (cashOrderRequest.getType().equals("DEPOSIT"))
+            account.setBalance(account.getBalance() + cashOrderRequest.getAmount());
+
+        if (cashOrderRequest.getType().equals("WITHDRAW")) {
+            if (account.getBalance() < cashOrderRequest.getAmount())
+                throw new NotEnoughMoneyException("Недостаточно средств на счету");
+            account.setBalance(account.getBalance() - cashOrderRequest.getAmount());
+        }
+
+        cashOrder.setExecutionResult("SUCCESS");
+        transaction.setExecutionResult("SUCCESS");
 
         accountRepository.save(account);
         cashOrderRepository.save(cashOrder);
