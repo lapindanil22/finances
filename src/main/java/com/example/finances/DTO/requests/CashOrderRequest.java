@@ -7,4 +7,5 @@ public class CashOrderRequest {
     private String type;
     private int amount;
     private int accountId;
+    private String secretWord;
 }

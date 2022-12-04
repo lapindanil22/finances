@@ -33,7 +33,7 @@ databaseChangeLog:
                     nullable: true
               - column:
                   name: secret_word
-                  type: varchar(50)
+                  type: char(60)
         - createTable:
             tableName: account
             columns:
@@ -179,3 +179,227 @@ databaseChangeLog:
             constraintName: fk_account_id
             referencedColumnNames: account_id
             referencedTableName: account
+
+  - changeSet:
+      id: fill-tables
+      author: danil
+      changes:
+        - insert:
+            tableName: client
+            columns:
+              - column:
+                  name: last_name
+                  value: Nunquam
+              - column:
+                  name: first_name
+                  value: Ridetis
+              - column:
+                  name: middle_name
+                  value: Patienter
+              - column:
+                  name: secret_word
+                  value: $2a$12$FgH/NHryz3pkfyqtXdBS5.LJC/5kzrNmuKxtckFVxx8SrC/Xlx9MC
+        - insert:
+            tableName: client
+            columns:
+              - column:
+                  name: last_name
+                  value: Vortex
+              - column:
+                  name: first_name
+                  value: Peregrinatione
+              - column:
+                  name: middle_name
+                  value: Omnes
+              - column:
+                  name: secret_word
+                  value: $2a$12$SHggkyPjvKQXGZ.u82b56eVU.vXahGgX5/i2poZXAgvBB9SYjpZ62
+        - insert:
+            tableName: account
+            columns:
+              - column:
+                  name: client_id
+                  value: 1
+              - column:
+                  name: account_number
+                  value: 123000
+              - column:
+                  name: balance
+                  value: 500
+              - column:
+                  name: account_type
+                  value: DEBIT
+              - column:
+                  name: opening_date
+                  value: '2020-06-20'
+              - column:
+                  name: expiration_date
+                  value: '2030-06-20'
+        - insert:
+            tableName: account
+            columns:
+              - column:
+                  name: client_id
+                  value: 1
+              - column:
+                  name: account_number
+                  value: 123001
+              - column:
+                  name: balance
+                  value: 0
+              - column:
+                  name: account_type
+                  value: CREDIT
+              - column:
+                  name: opening_date
+                  value: '2018-05-22'
+              - column:
+                  name: expiration_date
+                  value: '2028-05-22'
+        - insert:
+            tableName: account
+            columns:
+              - column:
+                  name: client_id
+                  value: 2
+              - column:
+                  name: account_number
+                  value: 123002
+              - column:
+                  name: balance
+                  value: 200
+              - column:
+                  name: account_type
+                  value: DEBIT
+              - column:
+                  name: opening_date
+                  value: '2017-02-25'
+              - column:
+                  name: expiration_date
+                  value: '2027-02-25'
+        - insert:
+            tableName: cash_order
+            columns:
+              - column:
+                  name: order_type
+                  value: DEPOSIT
+              - column:
+                  name: amount
+                  value: 500
+              - column:
+                  name: creation_date
+                  value: '2022-12-01'
+              - column:
+                  name: execution_result
+                  value: SUCCESS
+              - column:
+                  name: account_id
+                  value: 1
+        - insert:
+            tableName: transaction
+            columns:
+              - column:
+                  name: amount
+                  value: 500
+              - column:
+                  name: creation_date
+                  value: '2022-12-01'
+              - column:
+                  name: type
+                  value: DEPOSIT
+              - column:
+                  name: execution_result
+                  value: SUCCESS
+              - column:
+                  name: account_id
+                  value: 1
+              - column:
+                  name: cash_order_id
+                  value: 1
+              - column:
+                  name: sender_account_id
+                  value: null
+        - insert:
+            tableName: cash_order
+            columns:
+              - column:
+                  name: order_type
+                  value: TRANSFER
+              - column:
+                  name: amount
+                  value: 300
+              - column:
+                  name: creation_date
+                  value: '2022-12-01'
+              - column:
+                  name: execution_result
+                  value: SUCCESS
+              - column:
+                  name: account_id
+                  value: 1
+        - insert:
+            tableName: transaction
+            columns:
+              - column:
+                  name: amount
+                  value: 300
+              - column:
+                  name: creation_date
+                  value: '2022-12-01'
+              - column:
+                  name: type
+                  value: TRANSFER
+              - column:
+                  name: execution_result
+                  value: SUCCESS
+              - column:
+                  name: account_id
+                  value: 2
+              - column:
+                  name: cash_order_id
+                  value: null
+              - column:
+                  name: sender_account_id
+                  value: 1
+        - insert:
+            tableName: cash_order
+            columns:
+              - column:
+                  name: order_type
+                  value: WITHDRAW
+              - column:
+                  name: amount
+                  value: 200
+              - column:
+                  name: creation_date
+                  value: '2022-12-02'
+              - column:
+                  name: execution_result
+                  value: SUCCESS
+              - column:
+                  name: account_id
+                  value: 1
+        - insert:
+            tableName: transaction
+            columns:
+              - column:
+                  name: amount
+                  value: 200
+              - column:
+                  name: creation_date
+                  value: '2022-12-02'
+              - column:
+                  name: type
+                  value: WITHDRAW
+              - column:
+                  name: execution_result
+                  value: SUCCESS
+              - column:
+                  name: account_id
+                  value: 1
+              - column:
+                  name: cash_order_id
+                  value: 2
+              - column:
+                  name: sender_account_id
+                  value: null
